@@ -29,11 +29,13 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
     int FPS = 60;
        
     // SYSTEM
-    tileManager tileM = new tileManager(this); // passa a class GamePanel como um parametro
+    tileManager tileM = new tileManager(this); // instancia a imagem e passa a class GamePanel como um parametro
     KeyHandler keyH = new KeyHandler();
-    Sound sound = new Sound();
+    Sound music = new Sound();
+    Sound se = new Sound();
     public CollisionChecker cChecker = new CollisionChecker(this); // GamePanel instanciada na CollisionChecker
     public AssetSetter aSetter = new AssetSetter(this); // GamePanel instanciada na AssetSetter
+    public UI ui = new UI(this);
     Thread gameThread; // Thread permite que um programa possa executar várias tarefas diferentes ao mesmo tempo.
     
     // ENTITY AND OBJECT
@@ -150,24 +152,27 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
         
         // PLAYER
         player.draw(g2); // chamando draw do player com o graphics 2d.
+        
+        // UI
+        ui.draw(g2);
                 
         g2.dispose(); // Elimina o contexto grafico e libera recursos do sistema que estava usando.
     }
     
     public void playMusic(int i) {
         
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        music.setFile(i);
+        music.play();
+        music.loop();
     }
     
     public void stopMusic() {
-        sound.stop();
+        music.stop();
     }
     
-    public void playSE(int i) { // SOUND EFECT
+    public void playSE(int i) { // SOUND EFFECT
         
-        sound.setFile(i);
-        sound.play();
+        se.setFile(i);
+        se.play();
     }
 }

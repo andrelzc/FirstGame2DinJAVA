@@ -10,7 +10,7 @@ public class Sound {
     Clip clip;
     URL soundURL[] = new URL[30]; // USADA PARA ARMAZENAR A ROTA DOS ARQUIVOS DE SOM
     
-    public Sound() {
+    public Sound() { // CONSTRUCTOR
         
         soundURL[0] = getClass().getResource("/sound/BlueBoyAdventure.wav");
         soundURL[1] = getClass().getResource("/sound/coin.wav");
@@ -19,7 +19,8 @@ public class Sound {
         soundURL[4] = getClass().getResource("/sound/unlock.wav");
     }
     
-    public void setFile(int i) { // UMA FORMA DE ABRIR UM ARQUIVO DE SOM NO JAVA
+    public void setFile(int i) { // UMA DAS FORMAS DE ABRIR UM ARQUIVO DE SOM NO JAVA
+        
         try {
             
             AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);

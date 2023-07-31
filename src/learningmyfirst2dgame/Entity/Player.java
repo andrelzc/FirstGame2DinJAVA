@@ -14,7 +14,7 @@ public class Player extends Entity{
     KeyHandler keyH;   
     public final int screenX;
     public final int screenY;
-    int hasKey = 0; // IRÁ INDICAR QUANTAS CHAVES O PLAYER TEM
+    public int hasKey = 0; // IRÁ INDICAR QUANTAS CHAVES O PLAYER TEM
     
     public Player(GamePanel gp, KeyHandler keyH){ // Constructor
         
@@ -22,16 +22,17 @@ public class Player extends Entity{
         this.keyH = keyH;
         
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2); // subtraindo pela metade do tamanho de ambos, screenX e Y
-        screenY = gp.screenHeight / 2 - (gp.tileSize / 2); //  Jogador ficará sempre no centro da camera       
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2); // fazendo o jogador ficará sempre no centro da camera       
         
-        // SET PLAYER'S COLLISION AREA 
+        // SET PLAYER'S COLLISION AREA (PLAYER)
+        // VALORES COM BASE NO TILESIZE
         solidArea = new Rectangle();
-        solidArea.x = 8;
-        solidArea.y = 16;
-        solidAreaDefaultX = solidArea.x; // Registrar valores Padroes, vai mudar o valor de solidArea.x
-        solidAreaDefaultY = solidArea.y; // Registrar valores Padroes, vai mudar o valor de solidArea.y
-        solidArea.width = 32;
-        solidArea.height = 32;
+        solidArea.x = 8; // nao colide
+        solidArea.y = 16; // nao colide 
+        solidAreaDefaultX = solidArea.x; // Registrar valores Padroes, pq o valor de solidArea.x vai mudar
+        solidAreaDefaultY = solidArea.y; // Registrar valores Padroes, pq o valor de solidArea.y vai mudar
+        solidArea.width = 32; // AREA DE COLISAO DA LARGURA 
+        solidArea.height = 32; // AREA DE COLISAO DA ALTURA
         
         setDefaultValues();
         getPlayerImage();     
@@ -134,20 +135,29 @@ public class Player extends Entity{
                     gp.playSE(1);
                     hasKey++; // AUMENTA A QNT CHAVE
                     gp.obj[i] = null; // OBJETO DESAPARECE
-                    System.out.println("Key: " + hasKey);
+                    gp.ui.showMessage("You got a key!");
                     break;
                 case "Door":
                     gp.playSE(4);
                     if(hasKey > 0){ // VERIFICA SE O PLAYER TEM CHAVES
                         gp.obj[i] = null; // OBJETO DESAPARECE
                         hasKey--; // DIMINUI A QNT CHAVE
-                        System.out.println("Key: " + hasKey);
+                        gp.ui.showMessage("You opened the door!");
+                    }
+                    else {
+                        gp.ui.showMessage("You need a key!");
                     }
                     break;
                 case "Boots":
                     gp.playSE(3);
                     speed += 1; // AUMENTA A VELOCIDADE DO PLAYER
                     gp.obj[i] = null; // OBJETO DESAPARECE
+                    gp.ui.showMessage("SPEED UP!");
+                    break;
+                case "Chest": // END GAME
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(2);
                     break;
             }
             
