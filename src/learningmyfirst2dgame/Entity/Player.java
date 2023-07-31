@@ -11,10 +11,10 @@ import learningmyfirst2dgame.KeyHandler; // importa lá no package main aonde ta
 public class Player extends Entity{
     
     GamePanel gp;
-    KeyHandler keyH;
-    
+    KeyHandler keyH;   
     public final int screenX;
     public final int screenY;
+    int hasKey = 0; // IRÁ INDICAR QUANTAS CHAVES O PLAYER TEM
     
     public Player(GamePanel gp, KeyHandler keyH){ // Constructor
         
@@ -28,6 +28,8 @@ public class Player extends Entity{
         solidArea = new Rectangle();
         solidArea.x = 8;
         solidArea.y = 16;
+        solidAreaDefaultX = solidArea.x; // Registrar valores Padroes, vai mudar o valor de solidArea.x
+        solidAreaDefaultY = solidArea.y; // Registrar valores Padroes, vai mudar o valor de solidArea.y
         solidArea.width = 32;
         solidArea.height = 32;
         
@@ -84,6 +86,10 @@ public class Player extends Entity{
             collisionOn = false;
             gp.cChecker.checkTile(this); // chama o metodo checkTile no Player
             
+            // CHECK OBJECT COLLISION
+            int objIndex = gp.cChecker.checkObject(this, true); // chama a Class Player como entity e verifica se é true a colisao             
+            pickUpObject(objIndex);
+            
             // IF COLLISION IS FALSE, PLAYER CAN MOVE   
             if(collisionOn == false) {
                 switch(direction){
@@ -112,6 +118,39 @@ public class Player extends Entity{
                 }
                     spriteCounter = 0;
             }
+        }
+    }
+    
+    
+    public void pickUpObject(int i){
+        
+        if(i != 999) { // 999 significa que nao tocamos em nenhum objeto *NUMERO ALEATORIO BONITO KKKKKKKKKKK*
+            
+            String objectName = gp.obj[i].name;
+            
+            switch(objectName) {
+                
+                case "Key":
+                    gp.playSE(1);
+                    hasKey++; // AUMENTA A QNT CHAVE
+                    gp.obj[i] = null; // OBJETO DESAPARECE
+                    System.out.println("Key: " + hasKey);
+                    break;
+                case "Door":
+                    gp.playSE(4);
+                    if(hasKey > 0){ // VERIFICA SE O PLAYER TEM CHAVES
+                        gp.obj[i] = null; // OBJETO DESAPARECE
+                        hasKey--; // DIMINUI A QNT CHAVE
+                        System.out.println("Key: " + hasKey);
+                    }
+                    break;
+                case "Boots":
+                    gp.playSE(3);
+                    speed += 1; // AUMENTA A VELOCIDADE DO PLAYER
+                    gp.obj[i] = null; // OBJETO DESAPARECE
+                    break;
+            }
+            
         }
     }
     

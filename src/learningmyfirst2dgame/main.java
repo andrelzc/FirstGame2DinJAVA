@@ -19,6 +19,7 @@ public class main {
         window.setLocationRelativeTo(null); // Janela sempre se apresentará no centro da tela.
         window.setVisible(true); // faz o frame aparecer na tela
         
+        gamePanel.setupGame();
         gamePanel.startGameThread(); // A ordem das variáveis da janela é importante, especificamente as variáveis pack, relative e visible.
     }
     

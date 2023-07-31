@@ -7,6 +7,7 @@ import java.awt.Graphics2D; // extend class Graphics, promove mais controle sobr
 import javax.swing.JPanel; // auxilia na formação do layout dos seus componentes em um frame.
 import learningmyfirst2dgame.Entity.Player;
 import learningmyfirst2dgame.tile.tileManager;
+import object.SuperObject;
 
 public class GamePanel extends JPanel implements Runnable { // Runnable é uma interface que obriga a implementar um método sem parâmetros que não retorna nada, esse método por acaso se chama run() e contém o código a ser efetivamente executado pela thread.
     
@@ -22,19 +23,23 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
     
     // WORLD SETTINGS
     public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
-    
+    public final int maxWorldRow = 50;   
     
     // FPS
     int FPS = 60;
-    
+       
+    // SYSTEM
     tileManager tileM = new tileManager(this); // passa a class GamePanel como um parametro
     KeyHandler keyH = new KeyHandler();
+    Sound sound = new Sound();
+    public CollisionChecker cChecker = new CollisionChecker(this); // GamePanel instanciada na CollisionChecker
+    public AssetSetter aSetter = new AssetSetter(this); // GamePanel instanciada na AssetSetter
     Thread gameThread; // Thread permite que um programa possa executar várias tarefas diferentes ao mesmo tempo.
-    public CollisionChecker cChecker = new CollisionChecker(this); // GamePanel instanciada
+    
+    // ENTITY AND OBJECT
     public Player player = new Player(this, keyH); // instanciando a class GamePanel (com o this pq esta dentro dela) e keyH.
+    public SuperObject obj[] = new SuperObject[10]; // prepara 10 slots para o obj, podendo reempregar o conteudo durante o game. *NUMERO BASEADO NA PERFORMANCE DO GAME 
+       
     
     public GamePanel(){ // Constructor
         
@@ -43,6 +48,13 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
         this.setDoubleBuffered(true); // Desenha todos os graficos fora da tela, depois copia todo o conteudo para a tela de uma so vez. Resumo, ajuda o game a melhorar o desempenho da renderização.
         this.addKeyListener(keyH); // adicionando o Key Input
         this.setFocusable(true); // Com ele, o GamePanel estará focado em receber as keys inputs. 
+    }
+    
+    public void setupGame() {
+        
+        aSetter.setObject();
+        
+        playMusic(0);
     }
     
     public void startGameThread(){
@@ -111,30 +123,51 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
             }
             
             if(timer >= 1000000000) { // timer maior ou igual 1seg em nano segundos.
-                System.out.println("FPS: " + drawCount); // quantas vezes foi update e repaint até chegar a 1seg
                 drawCount = 0;
                 timer = 0;
             }
         }
     }
     
-    public void update(){
+    public void update() {
         
         player.update(); // chamando update la do Player
     }
     
-    public void paintComponent(Graphics g) { // Este método é necessário para desenhar algo no JPanel, além de desenhar a cor de fundo
-        
-        super.paintComponent(g); // Super por causa que GamePanel extende JPanel
-        
+    public void paintComponent(Graphics g) { // Este método é necessário para desenhar algo no JPanel, além de desenhar a cor de fundo       
+        super.paintComponent(g); // Super por causa que GamePanel extende JPanel        
         Graphics2D g2 = (Graphics2D)g; // Mudou do graphics g pro 2D.
         
+        // TILE
         tileM.draw(g2); // chamar antes do player.draw, pra nao aparecer em cima do boneco, pq é o background
         
+        // OBJECT
+        for (int i = 0; i < obj.length; i++) { // DIRÁ QUAL TIPO DE OBJETO IRA DESENHAR, ESCANEARA O SUPEROBJECT 1 POR 1
+            if(obj[i] != null) { // COMPROVA SE TEM REALMENTE ALGUM ITEM DENTRO DO OBJ
+                obj[i].draw(g2, this); // chamando metodo draw e o GAMEPANEL
+            }
+        }
+        
+        // PLAYER
         player.draw(g2); // chamando draw do player com o graphics 2d.
                 
         g2.dispose(); // Elimina o contexto grafico e libera recursos do sistema que estava usando.
     }
-
     
+    public void playMusic(int i) {
+        
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+    
+    public void stopMusic() {
+        sound.stop();
+    }
+    
+    public void playSE(int i) { // SOUND EFECT
+        
+        sound.setFile(i);
+        sound.play();
+    }
 }
