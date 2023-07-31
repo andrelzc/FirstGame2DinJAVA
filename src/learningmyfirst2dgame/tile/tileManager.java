@@ -1,12 +1,14 @@
 package learningmyfirst2dgame.tile;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 import learningmyfirst2dgame.GamePanel;
+import learningmyfirst2dgame.UtilityTool;
 
 public class tileManager {
     
@@ -27,32 +29,31 @@ public class tileManager {
     }
     
     public void getTileImage() {
+
+            setup(0,"grass",false);
+            setup(1,"wall",true);
+            setup(2,"water",true);
+            setup(3,"earth",false);
+            setup(4,"tree",true);
+            setup(5,"sand",false);
+    }
+
+    public void setup(int index, String imageName, boolean collision) {  // INSTANCIANDO/IMPORTANDO/ESCALA E COLISAO DAS
+                                                                         // IMAGENS DO getTileImage
+
+        UtilityTool uTool = new UtilityTool();
+
         try {
-            
-            tile[0] = new Tile(); // instancia o array Tile para grass
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
-            
-            tile[1] = new Tile(); // instancia o array Tile para o wall
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
-            tile[1].collision = true;
-            
-            tile[2] = new Tile(); // instancia o array Tile para a water
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
-            tile[2].collision = true;
-            
-            tile[3] = new Tile(); // instancia o array Tile para a water
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
-            
-            tile[4] = new Tile(); // instancia o array Tile para a water
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
-            tile[4].collision = true;
-            
-            tile[5] = new Tile(); // instancia o array Tile para a water
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
-            
-        } catch(IOException e) {
+
+            tile[index] = new Tile();
+            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imageName + ".png"));
+            tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+            tile[index].collision = collision;
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     
     public void loadMap(String filePath) { // parametro para auxiliar na criação de diferentes mapas
@@ -113,7 +114,7 @@ public class tileManager {
                // CRIA UM LIMITE DO CENTRO DA TELA, TIPO PLANO CARTESIANO ( -X, +X, -Y, +Y ) 
                // *** O PROGRAMA ATUALMENTE SÓ DESENHA AO REDOR DO JOGADOR ***
             
-                g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
             }
             
             worldCol++;
@@ -124,5 +125,5 @@ public class tileManager {
             }
             
         }
-        }
+    }
 }

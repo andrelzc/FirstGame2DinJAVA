@@ -139,7 +139,14 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
     public void paintComponent(Graphics g) { // Este método é necessário para desenhar algo no JPanel, além de desenhar a cor de fundo       
         super.paintComponent(g); // Super por causa que GamePanel extende JPanel        
         Graphics2D g2 = (Graphics2D)g; // Mudou do graphics g pro 2D.
-        
+
+        // DEBUG
+        long drawStart = 0;
+
+        if(keyH.checkDrawTime == true) {
+            drawStart = System.nanoTime();
+        }
+
         // TILE
         tileM.draw(g2); // chamar antes do player.draw, pra nao aparecer em cima do boneco, pq é o background
         
@@ -155,7 +162,16 @@ public class GamePanel extends JPanel implements Runnable { // Runnable é uma i
         
         // UI
         ui.draw(g2);
-                
+
+        // DEBUG
+        if(keyH.checkDrawTime == true) {
+            long drawEnd = System.nanoTime();
+            long passed = drawEnd - drawStart;
+            g2.setColor(Color.white);
+            g2.drawString("Draw Time: " + passed, 10, 400);
+            System.out.println("Draw Time: " + passed);
+        }
+
         g2.dispose(); // Elimina o contexto grafico e libera recursos do sistema que estava usando.
     }
     

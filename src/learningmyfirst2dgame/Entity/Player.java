@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import learningmyfirst2dgame.GamePanel; // importa lá no package main aonde ta o GamePanel
 import learningmyfirst2dgame.KeyHandler; // importa lá no package main aonde ta o KeyHandler
+import learningmyfirst2dgame.UtilityTool;
 
 public class Player extends Entity{
     
@@ -49,21 +50,31 @@ public class Player extends Entity{
     }
     
     public void getPlayerImage() {
-        
-        try { // aqui vai ser posto as imagens
-            
-            up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_2.png"));
-            
-        }catch(IOException e) {
+
+        up1 = setup("boy_up_1");
+        up2 = setup("boy_up_2");
+        down1 = setup("boy_down_1");
+        down2 = setup("boy_down_2");
+        left1 = setup("boy_left_1");
+        left2 = setup("boy_left_2");
+        right1 = setup("boy_right_1");
+        right2 = setup("boy_right_2");
+
+    }
+
+    public BufferedImage setup(String imageName) { // SCALE PLAYER IMAGE
+
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName + ".png"));
+            image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return image;
     }
     
     public void update() {       // metodo update chamado 60x por segundo
@@ -207,6 +218,6 @@ public class Player extends Entity{
                 break;
         }
         
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null); // (bufferedimagem, x, y, width, height, imageObserver)
+        g2.drawImage(image, screenX, screenY, null); // (BufferedImage, x, y, width, height, imageObserver)
     }
 }
